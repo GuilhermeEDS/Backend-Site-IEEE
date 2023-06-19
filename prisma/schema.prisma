@@ -10,8 +10,61 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+model Ramo {
   id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+
+  nome  String
+  logo String?
+  capitulos Capitulo[]
+}
+
+model Capitulo {
+  id    Int     @id @default(autoincrement())
+
+  nome  String?
+  logo String?
+  usuarios Usuario[]
+
+  ramo    Ramo?    @relation(fields: [ramoId], references: [id])
+  ramoId  Int?
+  
+}
+
+model Usuario {
+  id        Int      @id @default(autoincrement())
+  
+  criadoEm  DateTime @default(now())
+  email     String   @unique
+  name      String?
+  role      Role     @default(USER)
+  posts     Post[]
+
+  capitulo    Capitulo?    @relation(fields: [capituloId], references: [id])
+  capituloId  Int?
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  
+  criadoEm DateTime @default(now())
+  editadoEm DateTime @updatedAt
+
+  tipo       PostType
+  titulo     String   @db.VarChar(255)
+  descricao  String
+  imagem     String?
+
+  usuario    Usuario?    @relation(fields: [usuarioId], references: [id])
+  usuarioId  Int?
+}
+
+enum PostType{
+  NOTICIA
+  EVENTO
+  PROJETO
+}
+
+enum Role {
+  USER
+  ADMIN
 }
