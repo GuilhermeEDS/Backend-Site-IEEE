@@ -1,10 +1,10 @@
-import { PrismaClient } from "@prisma/client";
+import { PostType, PrismaClient } from "@prisma/client";
 const repository = new PrismaClient().post;
 export default class PostController { 
 
   async todos(req, res) {
     const entidades = await repository.findMany();
-    res.status(201).json(entidades);;
+    res.status(200).json(entidades);
   }
 
   async porId(req, res) {
@@ -13,24 +13,48 @@ export default class PostController {
       if (entidade == null) {
         res.status(404).send();
       } else {
-        res.status(201).json(entidade);
+        res.status(200).json(entidade);
       }
   }
 
   async criar(req, res) {
-    const entidade = await repository.create(req.body) 
-    res.status(201).json(entidade);
+    if(req.file){
+      req.body.imagem = req.file.filename.toString();
+      let {tipo, titulo, descricao, imagem, usuarioId} = req.body;
+      usuarioId = Number(usuarioId) 
+      if(tipo == 1){
+        tipo = PostType.NOTICIA
+      } else if(tipo == 2){
+        tipo = PostType.EVENTO
+      }else{
+        tipo = PostType.PROJETO
+      }
+      const entidade = await repository.create({
+        data:{
+          tipo,
+          titulo,
+          descricao,
+          imagem,
+          usuarioId
+        }
+      }) 
+      res.status(201).json(entidade);
+    }
   }
 
-  async atualizar(req, res) {
-    repository.update({
-      where: { id: capitulo.id },
-      data: capitulo
-    }).then((entidade) => { res.status(201).json(entidade); }).catch(next);
+  async noticias(req, res) {
+    const entidades = await repository.findMany({where: { tipo: PostType.NOTICIA}});
+    res.status(200).json(entidades);
   }
 
-  async remover(req, res) {
-    repository.delete({ where: { id } }).then((entidade) => { res.status(200).json(entidade); }).catch(next);;
+  async eventos(req, res) {
+    const entidades = await repository.findMany({where: { tipo: PostType.EVENTO}});
+    res.status(200).json(entidades);
+  }
+
+  async projetos(req, res) {
+    const entidades = await repository.findMany({where: { tipo: PostType.PROJETO}});
+    res.status(200).json(entidades);
   }
 
 }

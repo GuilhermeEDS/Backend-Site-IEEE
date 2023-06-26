@@ -58,13 +58,13 @@ model Post {
   usuarioId  Int?
 }
 
+enum Role {
+  USER
+  ADMIN
+}
+
 enum PostType{
   NOTICIA
   EVENTO
   PROJETO
-}
-
-enum Role {
-  USER
-  ADMIN
 }

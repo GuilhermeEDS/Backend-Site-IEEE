@@ -4,7 +4,7 @@ export default class RamoController {
 
   async todos(req, res) {
     const entidades = await repository.findMany();
-    res.status(201).json(entidades);;
+    res.status(200).json(entidades);;
   }
 
   async porId(req, res) {
@@ -13,23 +13,22 @@ export default class RamoController {
       if (entidade == null) {
         res.status(404).send();
       } else {
-        res.status(201).json(entidade);
+        res.status(200).json(entidade);
       }
   }
 
   async criar(req, res) {
-    const entidade = await repository.create(req.body) 
-    res.status(201).json(entidade);
+    if(req.file){
+      req.body.logo = req.file.filename.toString();
+      const {nome, logo} = req.body;
+      const entidade = await repository.create({
+        data:{
+          nome,
+          logo
+        }
+      }) 
+      res.status(201).json(entidade);
+    }
   }
 
-  async atualizar(req, res) {
-    repository.update({
-      where: { id: capitulo.id },
-      data: capitulo
-    }).then((entidade) => { res.status(201).json(entidade); }).catch(next);
-  }
-
-  async remover(req, res) {
-    repository.delete({ where: { id } }).then((entidade) => { res.status(200).json(entidade); }).catch(next);;
-  }
 }
