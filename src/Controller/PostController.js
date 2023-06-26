@@ -20,8 +20,7 @@ export default class PostController {
   async criar(req, res) {
     if(req.file){
       req.body.imagem = req.file.filename.toString();
-      let {tipo, titulo, descricao, imagem, usuarioId} = req.body;
-      usuarioId = Number(usuarioId) 
+      let {tipo, titulo, descricao, imagem} = req.body;
       if(tipo == 1){
         tipo = PostType.NOTICIA
       } else if(tipo == 2){
@@ -34,8 +33,7 @@ export default class PostController {
           tipo,
           titulo,
           descricao,
-          imagem,
-          usuarioId
+          imagem
         }
       }) 
       res.status(201).json(entidade);
