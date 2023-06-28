@@ -7,7 +7,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = "postgresql://postgres:159g357e@localhost:5432/ieee"
+  url      = "postgresql://postgres:senha@localhost:5432/ieee"
 }
 
 model Ramo {
